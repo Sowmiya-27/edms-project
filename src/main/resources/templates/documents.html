@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EDMS</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<h2>Enterprise Document Management System</h2>
+
+<!-- CREATE FOLDER -->
+<section>
+    <h3>Create Folder</h3>
+    <input type="text" id="folderName" placeholder="Folder name">
+    <button onclick="createFolder()">Create</button>
+</section>
+
+<hr>
+
+<!-- UPLOAD DOCUMENT -->
+<section>
+    <h3>Upload Document</h3>
+
+    <input type="text" id="title" placeholder="Document title">
+
+    <select id="folderSelect"></select>
+
+    <input type="file" id="file">
+
+    <button onclick="uploadDocument()">Upload</button>
+</section>
+
+<hr>
+
+<!-- VIEW DOCUMENTS -->
+<section>
+    <h3>View Documents</h3>
+
+    <select id="viewFolderSelect"></select>
+
+    <input type="text" id="searchInput" placeholder="Search by title">
+
+    <button onclick="loadDocuments()">Load</button>
+    <button onclick="searchDocuments()">Search</button>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>File Name</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody id="docTable"></tbody>
+    </table>
+</section>
+
+<!-- VERSION HISTORY MODAL -->
+<div id="versionModal" class="modal">
+    <div class="modal-content">
+        <h3>Version History</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Version</th>
+                <th>Uploaded At</th>
+                <th>Current</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody id="versionTable"></tbody>
+        </table>
+
+        <button onclick="closeModal()">Close</button>
+    </div>
+</div>
+
+<!-- UPLOAD NEW VERSION MODAL -->
+<div id="uploadVersionModal" class="modal">
+    <div class="modal-content">
+        <h3>Upload New Version</h3>
+        <input type="file" id="versionFile">
+        <br><br>
+        <button onclick="uploadNewVersion()">Upload</button>
+        <button onclick="closeUploadVersion()">Cancel</button>
+    </div>
+</div>
+
+<script src="/js/documents.js"></script>
+</body>
+</html>
