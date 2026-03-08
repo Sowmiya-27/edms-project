@@ -44,22 +44,21 @@ public class DocumentPermissionService {
         if (document.getOwner() == null) {
             return true;
         }
-        return document.getOwner().getId().equals(user.getId());
+        return document.getOwner().equals(user.getEmail()); // or user.getUsername()
     }
+
 
 
     // ===============================
     // CHECK EDIT PERMISSION
     // ===============================
     public boolean canEdit(User user, Document document) {
-
-        // Owner can always edit
-        if (document.getOwner().getId().equals(user.getId())) {
+        if (document.getOwner().equals(user.getEmail())) {
             return true;
         }
-
         return permissionRepository
                 .findByUserAndDocumentAndPermissionType(user, document, PermissionType.EDIT)
                 .isPresent();
     }
+
 }

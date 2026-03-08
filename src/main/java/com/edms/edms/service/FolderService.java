@@ -16,6 +16,12 @@ public class FolderService {
     }
 
     public Folder createFolder(Folder folder) {
+
+        // ✅ Duplicate check MUST be inside method
+        if (folderRepository.existsByName(folder.getName())) {
+            throw new RuntimeException("Folder already exists");
+        }
+
         return folderRepository.save(folder);
     }
 
@@ -24,6 +30,7 @@ public class FolderService {
     }
 
     public Folder getFolderById(Long id) {
-        return folderRepository.findById(id).orElseThrow();
+        return folderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Folder not found"));
     }
 }

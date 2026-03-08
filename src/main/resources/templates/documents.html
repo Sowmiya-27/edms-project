@@ -3,65 +3,271 @@
 <head>
     <meta charset="UTF-8">
     <title>EDMS</title>
-    <link rel="stylesheet" href="/css/style.css">
+
+    <style>
+
+        /* =========================
+           PAGE LAYOUT
+        ========================= */
+
+        body{
+        margin:0;
+        font-family:Segoe UI, Arial, sans-serif;
+        display:flex;
+        background:#f4f6fb;
+        }
+
+        /* =========================
+           SIDEBAR
+        ========================= */
+
+        .sidebar{
+        width:230px;
+        background:#2f6edb;
+        height:100vh;
+        color:white;
+        position:fixed;
+        padding-top:20px;
+        }
+
+        .sidebar h2{
+        text-align:center;
+        margin-bottom:30px;
+        }
+
+        .sidebar a{
+        display:block;
+        color:white;
+        padding:12px 20px;
+        text-decoration:none;
+        transition:0.3s;
+        }
+
+        .sidebar a:hover{
+        background:#1e5ac7;
+        }
+
+        /* =========================
+           MAIN CONTENT
+        ========================= */
+
+        .main{
+        margin-left:230px;
+        padding:30px;
+        width:100%;
+        }
+
+        header{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:20px;
+        }
+
+        header button{
+        padding:8px 15px;
+        background:#2f6edb;
+        color:white;
+        border:none;
+        border-radius:5px;
+        cursor:pointer;
+        }
+
+        header button:hover{
+        background:#1e5ac7;
+        }
+
+        /* =========================
+           SECTIONS
+        ========================= */
+
+        section{
+        background:white;
+        padding:20px;
+        margin-bottom:20px;
+        border-radius:8px;
+        box-shadow:0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        input,select{
+        padding:8px;
+        margin:5px;
+        border:1px solid #ccc;
+        border-radius:5px;
+        }
+
+        button{
+        padding:8px 12px;
+        background:#2f6edb;
+        color:white;
+        border:none;
+        border-radius:5px;
+        cursor:pointer;
+        }
+
+        button:hover{
+        background:#1e5ac7;
+        }
+
+        /* =========================
+           TABLE
+        ========================= */
+
+        table{
+        width:100%;
+        border-collapse:collapse;
+        margin-top:10px;
+        }
+
+        th,td{
+        padding:10px;
+        border:1px solid #ddd;
+        text-align:left;
+        }
+
+        th{
+        background:#f0f3fa;
+        }
+
+        /* =========================
+           MODALS
+        ========================= */
+
+        .modal{
+        display:none;
+        position:fixed;
+        z-index:1;
+        padding-top:100px;
+        left:0;
+        top:0;
+        width:100%;
+        height:100%;
+        background:rgba(0,0,0,0.5);
+        }
+
+        .modal-content{
+        background:white;
+        margin:auto;
+        padding:20px;
+        width:50%;
+        border-radius:8px;
+        }
+
+        textarea{
+        width:100%;
+        height:80px;
+        }
+
+    </style>
 </head>
+
 <body>
 
-<h2>Enterprise Document Management System</h2>
+<!-- =========================
+     SIDEBAR
+========================= -->
 
-<!-- CREATE FOLDER -->
-<section>
-    <h3>Create Folder</h3>
-    <input type="text" id="folderName" placeholder="Folder name">
-    <button onclick="createFolder()">Create</button>
-</section>
+<div class="sidebar">
 
-<hr>
+    <h2>EDMS</h2>
 
-<!-- UPLOAD DOCUMENT -->
-<section>
-    <h3>Upload Document</h3>
+    <a href="#">Dashboard</a>
+    <a href="#createFolder">Create Folder</a>
+    <a href="#uploadDoc">Upload Document</a>
+    <a href="#viewDocs">View Documents</a>
 
-    <input type="text" id="title" placeholder="Document title">
+</div>
 
-    <select id="folderSelect"></select>
+<!-- =========================
+     MAIN CONTENT
+========================= -->
 
-    <input type="file" id="file">
+<div class="main">
 
-    <button onclick="uploadDocument()">Upload</button>
-</section>
+    <header>
+        <h2>Enterprise Document Management System</h2>
+        <button onclick="logout()">Logout</button>
+    </header>
 
-<hr>
+    <!-- CREATE FOLDER -->
 
-<!-- VIEW DOCUMENTS -->
-<section>
-    <h3>View Documents</h3>
+    <section id="createFolder">
 
-    <select id="viewFolderSelect"></select>
+        <h3>Create Folder</h3>
 
-    <input type="text" id="searchInput" placeholder="Search by title">
+        <input type="text" id="folderName" placeholder="Folder name">
 
-    <button onclick="loadDocuments()">Load</button>
-    <button onclick="searchDocuments()">Search</button>
+        <button onclick="createFolder()">Create</button>
 
-    <table>
-        <thead>
-        <tr>
-            <th>Title</th>
-            <th>File Name</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody id="docTable"></tbody>
-    </table>
-</section>
+    </section>
 
-<!-- VERSION HISTORY MODAL -->
-<div id="versionModal" class="modal">
-    <div class="modal-content">
-        <h3>Version History</h3>
+
+    <!-- UPLOAD DOCUMENT -->
+
+    <section id="uploadDoc">
+
+        <h3>Upload Document</h3>
+
+        <input type="text" id="title" placeholder="Document title">
+
+        <input type="text" id="tags" placeholder="Tags (hr,finance,policy)">
+
+        <select id="folderSelect"></select>
+
+        <input type="file" id="file" accept=".pdf,.txt,.docx">
+
+        <button onclick="uploadDocument()">Upload</button>
+
+        <div id="uploadResult"></div>
+
+    </section>
+
+
+    <!-- VIEW DOCUMENTS -->
+
+    <section id="viewDocs">
+
+        <h3>View Documents</h3>
+
+        <select id="viewFolderSelect"></select>
+
+        <input type="text" id="searchInput" placeholder="Search by title or tags">
+
+        <button onclick="loadDocuments()">Load</button>
+        <button onclick="searchDocuments()">Search</button>
 
         <table>
+
+            <thead>
+            <tr>
+                <th>Title</th>
+                <th>File Name</th>
+                <th>Owner</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+
+            <tbody id="docTable"></tbody>
+
+        </table>
+
+    </section>
+
+</div>
+
+
+<!-- =========================
+     VERSION HISTORY MODAL
+========================= -->
+
+<div id="versionModal" class="modal">
+
+    <div class="modal-content">
+
+        <h3>Version History</h3>
+
+        <table border="1">
+
             <thead>
             <tr>
                 <th>Version</th>
@@ -70,24 +276,111 @@
                 <th>Action</th>
             </tr>
             </thead>
+
             <tbody id="versionTable"></tbody>
+
         </table>
 
+        <br>
+
         <button onclick="closeModal()">Close</button>
+
     </div>
 </div>
 
-<!-- UPLOAD NEW VERSION MODAL -->
-<div id="uploadVersionModal" class="modal">
+
+<!-- =========================
+     AI MODAL
+========================= -->
+
+<div id="aiModal" class="modal">
+
     <div class="modal-content">
-        <h3>Upload New Version</h3>
-        <input type="file" id="versionFile">
+
+        <h3>Ask AI About This Document</h3>
+
+        <textarea id="aiQuestion"></textarea>
+
         <br><br>
-        <button onclick="uploadNewVersion()">Upload</button>
-        <button onclick="closeUploadVersion()">Cancel</button>
+
+        <button onclick="submitAIQuestion()">Ask</button>
+        <button onclick="closeAIModal()">Cancel</button>
+
+        <hr>
+
+        <div id="aiResponse"></div>
+
     </div>
+
 </div>
+
+<script>
+
+    let selectedDocumentId=null;
+
+    function logout(){
+    fetch("/auth/logout",{
+    method:"POST",
+    credentials:"include"
+    }).then(()=>{
+    window.location.href="/auth";
+    });
+    }
+
+    window.onclick=function(event){
+    document.querySelectorAll('.modal').forEach(modal=>{
+    if(event.target===modal){
+    modal.style.display="none";
+    }
+    });
+    }
+
+    function openAIModal(documentId){
+    selectedDocumentId=documentId;
+    document.getElementById("aiModal").style.display="block";
+    document.getElementById("aiResponse").innerHTML="";
+    document.getElementById("aiQuestion").value="";
+    }
+
+    function closeAIModal(){
+    document.getElementById("aiModal").style.display="none";
+    }
+
+    async function submitAIQuestion(){
+
+    const question=document.getElementById("aiQuestion").value;
+
+    if(!question){
+    alert("Please enter a question");
+    return;
+    }
+
+    const response=await fetch(`/genai/ask?documentId=${selectedDocumentId}&question=${encodeURIComponent(question)}`,{
+    method:"POST",
+    credentials:"include"
+    });
+
+    if(response.ok){
+
+    const data=await response.json();
+
+    document.getElementById("aiResponse").innerHTML=`
+    <p><strong>Answer:</strong> ${data.answer}</p>
+    <p><strong>Confidence:</strong> ${data.confidence}</p>
+    <p><strong>Sources:</strong> ${data.sources.join(", ")}</p>
+    `;
+
+    }else{
+
+    document.getElementById("aiResponse").innerHTML="<p style='color:red;'>Error calling AI</p>";
+
+    }
+
+    }
+
+</script>
 
 <script src="/js/documents.js"></script>
+
 </body>
 </html>

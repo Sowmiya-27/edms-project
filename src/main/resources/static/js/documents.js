@@ -56,26 +56,67 @@ function createFolder() {
    UPLOAD DOCUMENT (v1)
 ========================= */
 function uploadDocument() {
-    const title = document.getElementById("title").value;
-    const folderId = document.getElementById("folderSelect").value;
-    const file = document.getElementById("file").files[0];
 
-    if (!title || !file) {
-        alert("Title and file required");
+    const title = document.getElementById("title").value.trim();
+    const tags = document.getElementById("tags").value;
+    const folderId = document.getElementById("folderSelect").value;
+    const fileInput = document.getElementById("file");
+    const file = fileInput.files[0];
+
+    if (!title) {
+        alert("Document title is required");
+        return;
+    }
+
+    if (!file) {
+        alert("Please select a file");
+        return;
+    }
+
+    // File size validation (10MB)
+    if (file.size > 10 * 1024 * 1024) {
+        alert("File size must be less than 10MB");
+        return;
+    }
+
+    // File type validation
+    const allowedTypes = [
+        "application/pdf",
+        "text/plain",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+        alert("Only PDF, DOCX, and TXT files are allowed");
         return;
     }
 
     const formData = new FormData();
     formData.append("title", title);
+    formData.append("tags", tags);
     formData.append("folderId", folderId);
     formData.append("file", file);
 
     fetch("/documents/upload", {
         method: "POST",
         body: formData
-    }).then(() => {
-        alert("Document uploaded");
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Upload failed");
+        }
+        return response.text();
+    })
+    .then(data => {
+        alert("Document uploaded successfully");
+        document.getElementById("title").value = "";
+        document.getElementById("tags").value = "";
+        fileInput.value = "";
         loadDocuments();
+    })
+    .catch(error => {
+        console.error(error);
+        alert("Error uploading document");
     });
 }
 
@@ -112,7 +153,7 @@ function renderTable(documents) {
     tbody.innerHTML = "";
 
     if (documents.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="3">No documents found</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="4">No documents found</td></tr>`;
         return;
     }
 
@@ -122,17 +163,20 @@ function renderTable(documents) {
         row.innerHTML = `
             <td>${doc.title}</td>
             <td>${doc.fileName}</td>
+            <td>${doc.owner?.name || "N/A"}</td>
             <td>
                 <button onclick="previewDoc(${doc.id})">Preview</button>
                 <button onclick="downloadDoc(${doc.id})">Download</button>
                 <button onclick="showVersions(${doc.id})">Versions</button>
                 <button onclick="openVersionUpload(${doc.id})">Upload New Version</button>
+                <button onclick="openAIModal(${doc.id})">Ask AI</button>
             </td>
         `;
 
         tbody.appendChild(row);
     });
 }
+
 
 /* =========================
    PREVIEW & DOWNLOAD
@@ -212,5 +256,46 @@ function uploadNewVersion() {
         closeUploadVersion();
         showVersions(currentDocumentId);
         loadDocuments();
+    });
+}
+
+/* =========================
+   AI ASK FEATURE
+========================= */
+
+function openAIModal(documentId) {
+    currentDocumentId = documentId;
+    document.getElementById("aiModal").style.display = "block";
+}
+
+function closeAIModal() {
+    document.getElementById("aiModal").style.display = "none";
+    document.getElementById("aiQuestion").value = "";
+    document.getElementById("aiResult").innerText = "";
+}
+
+function askAI() {
+
+    const question = document.getElementById("aiQuestion").value;
+
+    if (!question) {
+        alert("Enter a question");
+        return;
+    }
+
+    fetch(`/api/ai/ask/${currentDocumentId}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "text/plain"
+        },
+        body: question
+    })
+    .then(res => res.text())
+    .then(answer => {
+        document.getElementById("aiResult").innerText = answer;
+    })
+    .catch(err => {
+        console.error(err);
+        document.getElementById("aiResult").innerText = "Error calling AI";
     });
 }

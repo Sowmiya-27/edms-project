@@ -10,4 +10,19 @@ public class HomeController {
     public String documentsPage() {
         return "documents"; // documents.html
     }
+
+    @GetMapping("/admin-ui")
+    public String adminPage() {
+        return "admin"; // admin.html
+    }
+
+    @GetMapping("/auth")
+    public String authPage() {
+        return "auth"; // auth.html
+    }
+
+    @GetMapping("/register")
+    public String registerPage() {
+        return "register";
+    }
 }

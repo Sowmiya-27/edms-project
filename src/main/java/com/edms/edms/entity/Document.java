@@ -25,12 +25,8 @@ public class Document {
     @Column(nullable = false)
     private boolean isPublic = false; // default PRIVATE
 
-    // ===============================
-    // OWNER (USER)
-    // ===============================
-    @ManyToOne
-    @JoinColumn(name = "owner_id")
-    private User owner;
+    @Column(name="tags")
+    private String tags;
 
     // ===============================
     // RELATIONSHIP : FOLDER
@@ -47,6 +43,24 @@ public class Document {
     private List<DocumentVersion> versions;
 
     // ===============================
+// OWNER (RELATIONSHIP WITH USER)
+// ===============================
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner;
+
+    // ===============================
+// SHARED USERS
+// ===============================
+    @ManyToMany
+    @JoinTable(
+            name = "document_shared_users",
+            joinColumns = @JoinColumn(name = "document_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private java.util.Set<User> sharedUsers = new java.util.HashSet<>();
+
+    // ===============================
     // GETTERS & SETTERS
     // ===============================
 
@@ -56,6 +70,14 @@ public class Document {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
     }
 
     public String getFileName() {
@@ -106,14 +128,6 @@ public class Document {
         this.isPublic = isPublic;
     }
 
-    public User getOwner() {
-        return owner;
-    }
-
-    public void setOwner(User owner) {
-        this.owner = owner;
-    }
-
     public Folder getFolder() {
         return folder;
     }
@@ -126,7 +140,24 @@ public class Document {
         return versions;
     }
 
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
+    public java.util.Set<User> getSharedUsers() {
+        return sharedUsers;
+    }
+
+    public void setSharedUsers(java.util.Set<User> sharedUsers) {
+        this.sharedUsers = sharedUsers;
+    }
+
     public void setVersions(List<DocumentVersion> versions) {
         this.versions = versions;
     }
+
 }

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EDMS Login</title>
+
+    <style>
+
+        body{
+        margin:0;
+        font-family:Segoe UI, Arial, sans-serif;
+        height:100vh;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        background: linear-gradient(135deg,#4f8ef7,#2f6edb);
+        }
+
+        /* LOGIN CARD */
+        .login-card{
+        background:white;
+        width:380px;
+        padding:40px;
+        border-radius:12px;
+        box-shadow:0 10px 35px rgba(0,0,0,0.2);
+        animation:fadeIn 0.6s ease;
+        }
+
+        /* TITLE */
+        .title{
+        text-align:center;
+        margin-bottom:25px;
+        }
+
+        .title h1{
+        margin:0;
+        color:#2f6edb;
+        font-size:26px;
+        }
+
+        .title p{
+        margin-top:6px;
+        color:#777;
+        font-size:14px;
+        }
+
+        /* INPUTS */
+        .input-group{
+        margin-bottom:18px;
+        }
+
+        .input-group label{
+        font-size:14px;
+        color:#555;
+        }
+
+        .input-group input{
+        width:100%;
+        padding:11px;
+        margin-top:6px;
+        border-radius:6px;
+        border:1px solid #ccc;
+        font-size:14px;
+        transition:0.25s;
+        }
+
+        .input-group input:focus{
+        outline:none;
+        border-color:#2f6edb;
+        box-shadow:0 0 6px rgba(47,110,219,0.25);
+        }
+
+        /* BUTTON */
+        button{
+        width:100%;
+        padding:11px;
+        border:none;
+        border-radius:6px;
+        background:#2f6edb;
+        color:white;
+        font-size:15px;
+        cursor:pointer;
+        transition:0.3s;
+        font-weight:600;
+        }
+
+        button:hover{
+        background:#1e5ac7;
+        transform:scale(1.02);
+        }
+
+        /* MESSAGE */
+        #message{
+        text-align:center;
+        margin-top:15px;
+        font-weight:bold;
+        }
+
+        .success{
+        color:#2f6edb;
+        }
+
+        .error{
+        color:red;
+        }
+
+        /* REGISTER LINK */
+        .register{
+        text-align:center;
+        margin-top:18px;
+        font-size:14px;
+        }
+
+        .register a{
+        color:#2f6edb;
+        text-decoration:none;
+        font-weight:600;
+        }
+
+        .register a:hover{
+        text-decoration:underline;
+        }
+
+        /* SIMPLE ANIMATION */
+        @keyframes fadeIn{
+        from{
+        opacity:0;
+        transform:translateY(20px);
+        }
+        to{
+        opacity:1;
+        transform:translateY(0);
+        }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="login-card">
+
+    <div class="title">
+        <h1>EDMS</h1>
+        <p>Enterprise Document Management System</p>
+    </div>
+
+    <form id="loginForm">
+
+        <div class="input-group">
+            <label>Email Address</label>
+            <input type="email" id="loginEmail" placeholder="Enter your email" required>
+        </div>
+
+        <div class="input-group">
+            <label>Password</label>
+            <input type="password" id="loginPassword" placeholder="Enter your password" required>
+        </div>
+
+        <button type="submit">Login</button>
+
+    </form>
+
+    <div id="message"></div>
+
+    <div class="register">
+        Don't have an account?
+        <a href="/register">Register</a>
+    </div>
+
+</div>
+
+<script>
+
+    document.getElementById("loginForm").addEventListener("submit", async function(e){
+
+    e.preventDefault();
+
+    const response = await fetch("/auth/login",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    credentials:"include",
+    body:JSON.stringify({
+    email:document.getElementById("loginEmail").value,
+    password:document.getElementById("loginPassword").value
+    })
+    });
+
+    const messageEl=document.getElementById("message");
+
+    if(response.ok){
+
+    const data=await response.json();
+
+    messageEl.innerText="Login Successful!";
+    messageEl.className="success";
+
+    setTimeout(()=>{
+    if(data.role==="ADMIN"){
+    window.location.href="/admin-ui";
+    }else{
+    window.location.href="/documents-ui";
+    }
+    },800);
+
+    }else{
+
+    messageEl.innerText="Invalid email or password";
+    messageEl.className="error";
+
+    }
+
+    });
+
+</script>
+
+</body>
+</html>

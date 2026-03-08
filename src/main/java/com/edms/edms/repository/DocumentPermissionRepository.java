@@ -1,5 +1,6 @@
 package com.edms.edms.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,4 +18,6 @@ public interface DocumentPermissionRepository
             Document document,
             PermissionType permissionType
     );
+    List<DocumentPermission> findByDocumentId(Long documentId);
+    List<DocumentPermission> findByUser(User user);
 }
